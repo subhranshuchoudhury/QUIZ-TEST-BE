@@ -1,0 +1,12 @@
+{
+  "name": "QUIZ-TEST-BACKEND",
+  "version": "1.0.0",
+  "description": "Quiz App backend for SOA ",
+  "main": "index.js",
+  "author": "Subhranshu Choudhury",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.4.4"
+  }
+}
