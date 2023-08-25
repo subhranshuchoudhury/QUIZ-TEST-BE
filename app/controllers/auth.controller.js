@@ -2,43 +2,76 @@ const config = require("../config/auth.config");
 const db = require("../models");
 const User = db.user;
 const Role = db.role;
-
+const nodemailer = require("nodemailer");
+const otpGenerator = require("otp-generator");
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 
+// * Mail Transporter
+
+const transporter = nodemailer.createTransport({
+  host: "smtp-relay.brevo.com",
+  port: 587,
+  auth: {
+    user: "subhransuchoudhury00@gmail.com",
+    pass: "0Zc2YJzmh7bFUEHI",
+  },
+});
+
+const sendMail = async (to, subject, otp) => {
+  try {
+    const info = await transporter.sendMail({
+      from: "' Quizzer <subhransuchoudhury00@gmail.com>'", // sender address
+      to: to, // list of receivers
+      subject: subject, // Subject line
+      text: `Your Quizzer password is ${otp}`, // plain text body
+      html: `<b>Your Quizzer login password is: <h3 style="color:green;">${otp}</h3>NOTE: This should kept with safety.</b>`, // html body
+    });
+    console.log("Message sent:", info.messageId);
+    return 200;
+  } catch (error) {
+    console.log(error);
+    return 400;
+  }
+};
+
 exports.signup = async (req, res) => {
+  const OTP = otpGenerator.generate(6, {
+    upperCaseAlphabets: false,
+    specialChars: false,
+  });
+
   const user = new User({
     name: req.body.name,
-    username: req.body.username,
     email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 8),
+    password: bcrypt.hashSync(OTP, 8),
   });
+
+  const mailStatus = await sendMail(user.email, "🔐 Quizzer Password", OTP);
+
+  if (mailStatus === 400) {
+    res.status(500).send({ message: "Error sending OTP" });
+    return;
+  }
 
   try {
     const response = await user.save();
     if (response) {
-      if (req.body.roles) {
-        Role.find(
-          {
-            name: { $in: req.body.roles },
-          },
-          (err, roles) => {
-            if (err) {
-              res.status(500).send({ message: err });
-              return;
-            }
+      if (req.body.email.includes("@soa.ac.in")) {
+        // const roles = Role.find({
+        //   name: { $in: req.body.roles },
+        // });
+        // user.roles = roles.map((role) => role._id);
+        // user.save().then((savedUser) => {
+        //   res.send({ message: "User was registered successfully!" });
+        // });
 
-            user.roles = roles.map((role) => role._id);
-            user.save((err) => {
-              if (err) {
-                res.status(500).send({ message: err });
-                return;
-              }
-
-              res.send({ message: "User was registered successfully!" });
-            });
-          }
-        );
+        Role.findOne({ name: "moderator" }).then((role) => {
+          user.roles = [role._id];
+          user.save().then((savedUser) => {
+            res.send({ message: "User was registered successfully!" });
+          });
+        });
       } else {
         Role.findOne({ name: "user" }).then((role) => {
           user.roles = [role._id];
@@ -84,7 +117,6 @@ exports.signin = async (req, res) => {
         authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
       }
       res.status(200).send({
-        username: user.username,
         name: user.name,
         email: user.email,
         roles: authorities,
