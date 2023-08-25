@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const questionModel = require("./question.model");
 const { Schema, model } = mongoose;
 
-const ExamSchema = new Schema({
+const QuizSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -17,6 +17,11 @@ const ExamSchema = new Schema({
     type: Date,
     required: true,
   },
+  userId: {
+    // * The creator ID of the quiz
+    type: String,
+    required: true,
+  },
   duration: {
     type: Number,
     required: true,
@@ -24,4 +29,4 @@ const ExamSchema = new Schema({
   questions: [questionModel.schema],
 });
 
-module.exports = model("Exam", ExamSchema);
+module.exports = model("Quiz", QuizSchema);
