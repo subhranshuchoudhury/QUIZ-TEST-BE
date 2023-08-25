@@ -53,4 +53,10 @@ module.exports = function (app) {
   );
 
   app.post("/api/get/quiz", [authJwt.verifyToken], controller.getQuiz);
+
+  app.post(
+    "/api/get/quiz/analyze",
+    [authJwt.verifyToken],
+    controller.getQuizAnalyze
+  );
 };

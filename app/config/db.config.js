@@ -1,4 +1,4 @@
 require("dotenv").config();
 module.exports = {
-  URL: `${process.env.MONGO_URI}`,
+  URL: `${process.env.MONGODB_URI}`,
 };

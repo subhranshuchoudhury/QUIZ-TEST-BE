@@ -143,3 +143,44 @@ exports.getQuiz = async (req, res) => {
     res.json({ message: "Server error" });
   }
 };
+
+exports.getQuizAnalyze = async (req, res) => {
+  try {
+    // * get only question and only correct option
+    const quiz = await Quiz.findById(req.body.quizId).select(
+      "questions._id questions.options._id questions.options.is_correct"
+    );
+    const correctOptionIds = quiz.questions.map((question) => {
+      return {
+        questionId: question._id,
+        correctId: question.options
+          .filter((option) => option.is_correct)
+          .map((option) => option._id)[0],
+      };
+    });
+
+    const userAnswer = req.body.userAnswer;
+
+    const uniqueUserAnswers = userAnswer.filter((answer, index, array) => {
+      return (
+        array.findIndex((a) => a.questionId === answer.questionId) === index
+      );
+    });
+
+    let score = 0;
+    for (let i = 0; i < uniqueUserAnswers.length; i++) {
+      let answer = uniqueUserAnswers[i];
+      let question = correctOptionIds.find(
+        (q) => q.questionId.toString() === answer.questionId
+      );
+      if (question && question.correctId.toString() === answer.correctId) {
+        score++;
+      }
+    }
+
+    res.json({ score });
+  } catch (error) {
+    console.log(error);
+    res.json({ message: "Server error" });
+  }
+};

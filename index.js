@@ -60,7 +60,7 @@ const createRoles = async () => {
 };
 
 db.mongoose
-  .connect("mongodb://127.0.0.1:27017/quiz")
+  .connect(`${process.env.MONGODB_URI}`)
   .then(() => {
     console.log("--> Connected to database");
     createRoles();
@@ -72,8 +72,8 @@ db.mongoose
 
 // routes
 
-require("./app/routes/auth.routes")(app);
 require("./app/routes/test.routes")(app);
+require("./app/routes/auth.routes")(app);
 require("./app/routes/quiz.routes")(app);
 
 const PORT = process.env.PORT || 5000;
