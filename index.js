@@ -1,5 +1,4 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const app = express();
 require("dotenv").config();
 
@@ -15,6 +14,12 @@ app.use(express.json());
 
 const db = require("./app/models");
 const Role = db.role;
+
+app.get("/", (req, res) => {
+  res.send(
+    `<h1 style="color:red">ACCESSING THE API WITHOUT PROPER PERMISSION IS STRICTLY PROHIBITED!</h1><p>Property of Siksha 'O' Anusandhan University</p>`
+  );
+});
 
 // creating user role
 
