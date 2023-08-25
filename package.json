@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Quiz App backend for SOA ",
   "main": "index.js",
+  "engines": {
+    "node": "18.x"
+  },
   "author": "Subhranshu Choudhury",
   "license": "MIT",
   "dependencies": {
