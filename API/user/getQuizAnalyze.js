@@ -1,13 +1,9 @@
 const updateQuiz = {
-  quizId: "64e886683f56ffab35e1560c",
+  quizId: "64e89a4e1232a138ef2663f3",
   userAnswer: [
     {
-      questionId: "64e886fb3f56ffab35e15611",
-      correctId: "64e886fb3f56ffab35e15612",
-    },
-    {
-      questionId: "64e887673f56ffab35e1561f",
-      correctId: "64e887673f56ffab35e15620",
+      questionId: "64e89ab21232a138ef2663f8",
+      correctId: "64e89ab21232a138ef2663f9",
     },
   ],
 };

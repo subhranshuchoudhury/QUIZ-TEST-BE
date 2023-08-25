@@ -1,5 +1,5 @@
 const updateQuiz = {
-  quizId: "64e886683f56ffab35e1560c",
+  quizId: "64e89a4e1232a138ef2663f3",
   question: {
     question: "Who is the developer of the application?",
     options: [
@@ -28,7 +28,7 @@ const options = {
   headers: {
     "Content-Type": "application/json",
     "x-access-token":
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZTg4MzRjMWEzM2JiNzEwYzQzNjFhZSIsImlhdCI6MTY5Mjk2MDMyMSwiZXhwIjoxNjkzMDQ2NzIxfQ.WkoxJprU4pX_0nLUSDcx6c7HAVRWFlbbWx8u92F5q-s",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZTg5OTE4MTIzMmExMzhlZjI2NjNlNyIsImlhdCI6MTY5Mjk2NTM1MiwiZXhwIjoxNjkzMDUxNzUyfQ.KCpCSdeAYlq49u9lc2cNFWUEAoEVgLN4g0ALXFLCbjg",
   },
   body: JSON.stringify(updateQuiz),
 };
