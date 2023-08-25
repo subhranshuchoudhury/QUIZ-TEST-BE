@@ -1,9 +1,13 @@
 const updateQuiz = {
-  quizId: "64e84aa3d35efd192e97744f",
+  quizId: "64e886683f56ffab35e1560c",
   userAnswer: [
     {
-      questionId: "64e84d506763cec4adb1f6ce",
-      correctId: "64e84ef29e13133069cd840c",
+      questionId: "64e886fb3f56ffab35e15611",
+      correctId: "64e886fb3f56ffab35e15612",
+    },
+    {
+      questionId: "64e887673f56ffab35e1561f",
+      correctId: "64e887673f56ffab35e15620",
     },
   ],
 };
@@ -13,12 +17,12 @@ const options = {
   headers: {
     "Content-Type": "application/json",
     "x-access-token":
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZTgzZDU0NjQxMTY0NTdiMDZhMmEzOCIsImlhdCI6MTY5Mjk0MjI0NSwiZXhwIjoxNjkzMDI4NjQ1fQ.lAa0PRtqWavdt1dAnmMY_g9sDJs21SqUDENe_tBPOY8",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZTg4N2IxM2Y1NmZmYWIzNWUxNTYyNyIsImlhdCI6MTY5Mjk2MDcwOCwiZXhwIjoxNjkzMDQ3MTA4fQ.C0NjbW9GXPniy3oDismSwHNEbzPLtMrGZbcOidqzzAg",
   },
   body: JSON.stringify(updateQuiz),
 };
 
-fetch("http://localhost:5000/api/get/quiz/analyze", options)
+fetch("https://quiz-test-be.vercel.app/api/get/quiz/analyze", options)
   .then((response) => response.json())
   .then((response) => {
     console.log(response);
