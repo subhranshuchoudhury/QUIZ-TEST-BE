@@ -20,4 +20,7 @@ module.exports = function (app) {
   ); // register route
 
   app.post("/auth/login", controller.signin); // login route
+
+  app.post("/auth/forgot-password-1", controller.forgotPasswordStageOne); // forgot password route
+  app.post("/auth/forgot-password-2", controller.forgotPasswordStageTwo); // forgot password route
 };

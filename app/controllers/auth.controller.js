@@ -25,7 +25,7 @@ const sendMail = async (to, subject, otp) => {
       to: to, // list of receivers
       subject: subject, // Subject line
       text: `Your Quizzer password is ${otp}`, // plain text body
-      html: `<b>Your Quizzer login password is: <h3 style="color:green;">${otp}</h3>NOTE: This should kept with safety.</b>`, // html body
+      html: `<b>Your ${subject} is: <h3 style="color:green;">${otp}</h3>NOTE: This should kept with safety.</b>`, // html body
     });
     console.log("Message sent:", info.messageId);
     return 200;
@@ -95,7 +95,7 @@ exports.signin = async (req, res) => {
     }).populate("roles", "-__v");
 
     if (user) {
-      var passwordIsValid = bcrypt.compareSync(
+      const passwordIsValid = bcrypt.compareSync(
         req.body.password,
         user.password
       );
@@ -107,7 +107,7 @@ exports.signin = async (req, res) => {
         });
       }
 
-      var token = jwt.sign({ id: user.id }, config.secret, {
+      const token = jwt.sign({ id: user.id }, config.secret, {
         expiresIn: 86400, // 24 hours
       });
 
@@ -129,5 +129,104 @@ exports.signin = async (req, res) => {
     console.log(error);
     res.status(500).send({ message: err });
     return;
+  }
+};
+
+exports.forgotPasswordStageOne = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      res.status(404).send({ message: "User not found" });
+      return;
+    }
+
+    const OTP = otpGenerator.generate(6, {
+      upperCaseAlphabets: true,
+      specialChars: true,
+    });
+
+    if (user.recoveryCode.OTP) {
+      const timeDiff = Math.abs(
+        new Date().getTime() - user.recoveryCode.expires.getTime()
+      );
+      const diffMinutes = Math.ceil(timeDiff / (1000 * 60));
+      if (diffMinutes < 5) {
+        res.status(400).send({
+          message: "Mail already sent. Please try again after 5 minutes",
+        });
+        return;
+      }
+    }
+
+    user.recoveryCode.OTP = bcrypt.hashSync(OTP, 8);
+    user.recoveryCode.expires = new Date();
+    await user.save();
+    const mailResp = await sendMail(user.email, "🔐 Quizzer Recovery Key", OTP);
+    if (mailResp === 400) {
+      res.status(500).send({ message: "Error sending Recovery key" });
+      return;
+    }
+    res.status(200).send({
+      message: "Mail sent successfully. Please check your mail",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "Server error" });
+  }
+};
+
+exports.forgotPasswordStageTwo = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      res.status(404).send({ message: "User not found" });
+      return;
+    }
+
+    if (!user.recoveryCode.OTP) {
+      res.status(400).send({
+        message: "Please generate OTP first",
+      });
+      return;
+    }
+
+    const passwordIsValid = bcrypt.compareSync(
+      req.body.OTP,
+      user.recoveryCode.OTP
+    );
+
+    if (!passwordIsValid) {
+      res.status(401).send({ message: "Invalid OTP" });
+      return;
+    }
+
+    const timeDiff = Math.abs(
+      new Date().getTime() - user.recoveryCode.expires.getTime()
+    );
+    const diffMinutes = Math.ceil(timeDiff / (1000 * 60));
+    if (diffMinutes > 5) {
+      res.status(400).send({
+        message: "OTP expired. Please generate OTP again",
+      });
+      return;
+    }
+
+    const password = req.body.password || "1";
+
+    if (password < 6) {
+      res
+        .status(400)
+        .send({ message: "Password must be at least 6 characters long" });
+      return;
+    }
+
+    user.password = bcrypt.hashSync(password, 8);
+    user.recoveryCode.OTP = null;
+    await user.save().then((savedUser) => {
+      res.send({ message: "Password changed successfully" });
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "Server error" });
   }
 };
