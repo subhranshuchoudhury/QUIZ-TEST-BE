@@ -107,16 +107,19 @@ require("./app/routes/quiz.routes")(app);
 
 const PORT = process.env.PORT || 5000;
 
-if (cluster.isMaster) {
-  for (let i = 0; i < cpuCount; i++) {
-    cluster.fork();
-  }
-  cluster.on("exit", (worker, code, signal) => {
-    console.log(`--> WORKER ${worker.process.pid} DIED`);
-    cluster.fork();
-  });
-} else {
-  app.listen(PORT, () => {
-    console.log(`--> SERVER ACTIVE ON ${PORT} PID: @${process.pid} `);
-  });
-}
+// if (cluster.isMaster) {
+//   for (let i = 0; i < cpuCount; i++) {
+//     cluster.fork();
+//   }
+//   cluster.on("exit", (worker, code, signal) => {
+//     console.log(`--> WORKER ${worker.process.pid} DIED`);
+//     cluster.fork();
+//   });
+// } else {
+//   app.listen(PORT, () => {
+//     console.log(`--> SERVER ACTIVE ON ${PORT} PID: @${process.pid} `);
+//   });
+// }
+app.listen(PORT, () => {
+  console.log(`--> SERVER ACTIVE ON ${PORT} PID: @${process.pid} `);
+});
