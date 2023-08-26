@@ -1,6 +1,11 @@
 const express = require("express");
+const compression = require("compression");
+const cluster = require("cluster");
+const os = require("os");
 const app = express();
 require("dotenv").config();
+
+// * Cors
 
 app.use((req, res, next) => {
   res.header({
@@ -10,8 +15,25 @@ app.use((req, res, next) => {
   next();
 });
 
+// * receive JSON parsed body
+
 app.use(express.json());
 
+// * compressing for better performance
+
+app.use(
+  compression({
+    level: 6,
+    threshold: 10 * 1000, // * > 10 KB will be compressed.
+    filter: (req, res) => {
+      return compression.filter(req, res);
+    },
+  })
+);
+
+// * creating clusters to utilize CPUs.
+
+const cpuCount = os.cpus().length;
 const db = require("./app/models");
 const Role = db.role;
 
@@ -21,7 +43,7 @@ app.get("/", (req, res) => {
   );
 });
 
-// creating user role
+// * creating user role
 
 const createRoles = async () => {
   Role.estimatedDocumentCount().then((count) => {
@@ -64,6 +86,8 @@ const createRoles = async () => {
   });
 };
 
+// * connection to database
+
 db.mongoose
   .connect(`${process.env.MONGODB_URI}`)
   .then(() => {
@@ -75,7 +99,7 @@ db.mongoose
     process.exit();
   });
 
-// routes
+// * routes
 
 require("./app/routes/test.routes")(app);
 require("./app/routes/auth.routes")(app);
@@ -83,6 +107,16 @@ require("./app/routes/quiz.routes")(app);
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log("--> Server active on 5000");
-});
+if (cluster.isMaster) {
+  for (let i = 0; i < cpuCount; i++) {
+    cluster.fork();
+  }
+  cluster.on("exit", (worker, code, signal) => {
+    console.log(`--> WORKER ${worker.process.pid} DIED`);
+    cluster.fork();
+  });
+} else {
+  app.listen(PORT, () => {
+    console.log(`--> SERVER ACTIVE ON ${PORT} PID: @${process.pid} `);
+  });
+}

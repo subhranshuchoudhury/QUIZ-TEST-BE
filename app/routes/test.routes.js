@@ -1,6 +1,5 @@
 const { authJwt } = require("../middlewares");
 const controller = require("../controllers/test.controller");
-
 module.exports = function (app) {
   app.use(function (req, res, next) {
     res.header(
@@ -19,4 +18,5 @@ module.exports = function (app) {
   );
 
   app.get("/api/test/ip", controller.testAuthTwo);
+  app.get("/api/test/compression", controller.testCompression);
 };
