@@ -1,7 +1,7 @@
 const express = require("express");
 const compression = require("compression");
-const cluster = require("cluster");
-const os = require("os");
+// const cluster = require("cluster");
+// const os = require("os");
 const app = express();
 require("dotenv").config();
 
@@ -33,11 +33,11 @@ app.use(
 
 // * creating clusters to utilize CPUs.
 
-const cpuCount = os.cpus().length;
 const db = require("./app/models");
 const Role = db.role;
 
 app.get("/", (req, res) => {
+  console.log("--> Someone tried to access the API without permission");
   res.send(
     `<h1 style="color:red">ACCESSING THE API WITHOUT PROPER PERMISSION IS STRICTLY PROHIBITED!</h1><p>Property of Siksha 'O' Anusandhan University</p>`
   );
@@ -107,6 +107,8 @@ require("./app/routes/quiz.routes")(app);
 
 const PORT = process.env.PORT || 5000;
 
+// ? This cluster is not working on vercel, so commented out.
+// const cpuCount = os.cpus().length;
 // if (cluster.isMaster) {
 //   for (let i = 0; i < cpuCount; i++) {
 //     cluster.fork();
