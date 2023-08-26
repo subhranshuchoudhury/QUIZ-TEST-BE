@@ -17,4 +17,6 @@ module.exports = function (app) {
     [authJwt.isModerator],
     controller.testAuth
   );
+
+  app.get("/api/test/ip", controller.testAuthTwo);
 };
