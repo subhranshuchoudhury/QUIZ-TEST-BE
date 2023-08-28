@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config.js");
 const db = require("../models");
-const User = db.user;
+// const User = db.user;
+const Teacher = db.teacher;
 const Role = db.role;
 
 verifyToken = (req, res, next) => {
@@ -20,36 +21,36 @@ verifyToken = (req, res, next) => {
   });
 };
 
-isAdmin = async (req, res, next) => {
-  User.findById(req.userId)
-    .then((user) => {
-      if (user) {
-        Role.find({ _id: { $in: user.roles } })
-          .then((roles) => {
-            for (let i = 0; i < roles.length; i++) {
-              if (roles[i].name === "admin") {
-                next();
-                return;
-              }
-            }
+// isAdmin = async (req, res, next) => {
+//   User.findById(req.userId)
+//     .then((user) => {
+//       if (user) {
+//         Role.find({ _id: { $in: user.roles } })
+//           .then((roles) => {
+//             for (let i = 0; i < roles.length; i++) {
+//               if (roles[i].name === "admin") {
+//                 next();
+//                 return;
+//               }
+//             }
 
-            res.status(403).send({ message: "Require Admin Role!" });
-            return;
-          })
-          .catch((err) => {
-            res.status(500).send({ message: err });
-            return;
-          });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({ message: err });
-      return;
-    });
-};
+//             res.status(403).send({ message: "Require Admin Role!" });
+//             return;
+//           })
+//           .catch((err) => {
+//             res.status(500).send({ message: err });
+//             return;
+//           });
+//       }
+//     })
+//     .catch((err) => {
+//       res.status(500).send({ message: err });
+//       return;
+//     });
+// };
 
 isModerator = (req, res, next) => {
-  User.findById(req.userId)
+  Teacher.findById(req.userId)
     .then((user) => {
       if (user) {
         Role.find({ _id: { $in: user.roles } })
@@ -78,7 +79,7 @@ isModerator = (req, res, next) => {
 
 const authJwt = {
   verifyToken,
-  isAdmin,
+  // isAdmin,
   isModerator,
 };
 module.exports = authJwt;

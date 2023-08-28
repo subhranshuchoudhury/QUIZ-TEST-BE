@@ -23,4 +23,6 @@ module.exports = function (app) {
 
   app.post("/auth/forgot-password-1", controller.forgotPasswordStageOne); // forgot password route
   app.post("/auth/forgot-password-2", controller.forgotPasswordStageTwo); // forgot password route
+
+  // ! TEACHER ROUTES
 };

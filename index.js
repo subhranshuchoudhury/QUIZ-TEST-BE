@@ -104,6 +104,7 @@ db.mongoose
 require("./app/routes/test.routes")(app);
 require("./app/routes/auth.routes")(app);
 require("./app/routes/quiz.routes")(app);
+require("./app/routes/teacher-auth.routes")(app);
 
 const PORT = process.env.PORT || 5000;
 
