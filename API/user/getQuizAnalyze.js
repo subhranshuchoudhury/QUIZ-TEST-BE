@@ -1,9 +1,9 @@
 const updateQuiz = {
-  quizId: "64e89a4e1232a138ef2663f3",
+  quizId: "64edd9a3a6ff9cde0a07cd45",
   userAnswer: [
     {
-      questionId: "64e89ab21232a138ef2663f8",
-      correctId: "64e89ab21232a138ef2663f9",
+      questionId: "64eddcd6146d1ed2f278ed9f",
+      correctId: "64eddcd6146d1ed2f278eda0",
     },
   ],
 };
@@ -13,12 +13,12 @@ const options = {
   headers: {
     "Content-Type": "application/json",
     "x-access-token":
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZTg4N2IxM2Y1NmZmYWIzNWUxNTYyNyIsImlhdCI6MTY5Mjk2MDcwOCwiZXhwIjoxNjkzMDQ3MTA4fQ.C0NjbW9GXPniy3oDismSwHNEbzPLtMrGZbcOidqzzAg",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZWRhODlhOGVkZTQ1MDJlMjExODk0NiIsImlhdCI6MTY5MzI5NzExMywiZXhwIjoxNjkzMzgzNTEzfQ.Aur86DofGOlLFoMc5ryKmoWSeR-6mag0TDWNriCOdSU",
   },
   body: JSON.stringify(updateQuiz),
 };
 
-fetch("https://quiz-test-be.vercel.app/api/get/quiz/analyze", options)
+fetch("http://localhost:5000/api/get/quiz/analyze", options)
   .then((response) => response.json())
   .then((response) => {
     console.log(response);

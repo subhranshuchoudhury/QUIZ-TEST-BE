@@ -1,4 +1,4 @@
-const { authJwt } = require("../middlewares");
+const { authJwt, verifyQuiz } = require("../middlewares");
 const controller = require("../controllers/quiz.controller");
 
 module.exports = function (app) {
@@ -11,52 +11,66 @@ module.exports = function (app) {
   });
 
   app.post(
-    "/api/create-quiz",
+    "/api/teacher/quiz/create-quiz",
     [authJwt.verifyToken],
+    [verifyQuiz.validateCreateQuiz],
     [authJwt.isModerator],
     controller.createQuiz
   );
 
   app.post(
-    "/api/update-quiz",
+    "/api/teacher/quiz/update-quiz",
     [authJwt.verifyToken],
+    [verifyQuiz.validateUpdateQuiz],
     [authJwt.isModerator],
     controller.updateQuiz
   );
 
   app.post(
-    "/api/add-quiz-question",
+    "/api/teacher/quiz/add-quiz-question",
     [authJwt.verifyToken],
+    [verifyQuiz.validateAddQuestion],
     [authJwt.isModerator],
     controller.addQuestion
   );
 
   app.post(
-    "/api/update-quiz-question",
+    "/api/teacher/quiz/update-quiz-question",
     [authJwt.verifyToken],
+    [verifyQuiz.validateUpdateQuizQuestion],
     [authJwt.isModerator],
     controller.updateQuizQuestion
   );
 
   app.post(
-    "/api/delete-quiz",
+    "/api/teacher/quiz/delete-quiz",
     [authJwt.verifyToken],
+    [verifyQuiz.validateDeleteQuiz],
     [authJwt.isModerator],
     controller.deleteQuiz
   );
 
   app.post(
-    "/api/delete-quiz-question",
+    "/api/teacher/quiz/delete-quiz-question",
     [authJwt.verifyToken],
+    [verifyQuiz.validateDeleteQuizQuestion],
     [authJwt.isModerator],
     controller.deleteQuizQuestion
   );
 
-  app.post("/api/get/quiz", [authJwt.verifyToken], controller.getQuiz);
+  app.post(
+    "/api/get/quiz/id",
+    [authJwt.verifyToken],
+    [verifyQuiz.validateGetQuizById],
+    controller.getQuiz
+  );
+
+  app.post("/api/get/quiz/share", [authJwt.verifyToken], controller.getQuiz);
 
   app.post(
     "/api/get/quiz/analyze",
     [authJwt.verifyToken],
+    [verifyQuiz.validateGetQuizAnalyze],
     controller.getQuizAnalyze
   );
 };
