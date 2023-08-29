@@ -15,7 +15,9 @@ const validateRegisterInput = (req, res, next) => {
     }
   }
 
-  if (regdNo.length !== 10) {
+  const regex = /^\d{10}$/;
+
+  if (!regex.test(regdNo)) {
     return res.status(400).json({ message: "Registration number is invalid" });
   }
 

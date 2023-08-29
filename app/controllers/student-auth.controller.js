@@ -52,16 +52,14 @@ exports.studentRegisterTesting = async (req, res) => {
 };
 
 exports.studentLogin = async (req, res) => {
+  const { regdNo, password } = req.body;
   try {
     const student = await Student.findOne({
-      email: req.body.email,
+      regdNo,
     }).populate("roles", "-__v");
 
     if (student) {
-      const passwordIsValid = bcrypt.compareSync(
-        req.body.password,
-        student.password
-      );
+      const passwordIsValid = bcrypt.compareSync(password, student.password);
 
       if (!student.verified) {
         return res.status(301).send({
